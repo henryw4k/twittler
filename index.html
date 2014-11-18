@@ -1,180 +1,99 @@
 <!DOCTYPE html>
 <html>
   <head>
+
+    <style>
+      .date{
+        font-size: 10px;
+        color: blue;
+      }  
+      body{
+        background-color: #FAEBD7;
+      }
+
+      table, td {
+        border: 2px solid black;
+        padding: 2px;
+      }
+
+      tr:nth-child(even) {background: #CCC}
+      tr:nth-child(odd) {background: #E4D2BA}
+
+    </style>
+
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
-    <!-- AJAX -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src ="moment.min.js"></script>
-    
 
-
-    
     <script>
-        //alert(tweet.created_at);
-
         $(document).ready(function(){
-          //variables
-          var $body = $('body');
-          var arr_obj = [];//store all tweets
-          $body.html(
-            //document.getElementByID("but1");
-          // $("button").click(function(){
-          //   $("<span>Hello World!</span>").appendTo("p");
-          // });
-
-            );//suppose to be '' - empty
-            var index = streams.home.length - 1;
-
-          //button
-
-  // $("button").click(function(){
-  //   $.ajax().html(result);
-  //   }});
-  // }
-
-          //init_tweet(index);
+          
           $("#but1").click(function(){
-            init_tweet(index);
-            //alert(index);
+            init_tweet();
           });
 
-         //  var usertweets = function(){
-         //    $("a").click(function(){
-         //    alert("hello world");  
-         //  });
-         // }
-          var showUserTweets = function(){
-            $(".user").click(function(){
-            var twittlerHandler = $(this).text(); 
-            //alert(twittlerHandler);
-            //var temp ={};
-             $(".tweet").remove();
+          $('#tweet_table').on('click', ".user", function(){
+              var twittlerHandler = $(this).text(); 
+              showUserTweets(twittlerHandler);
+          });//click a user name
+
+
+          function showUserTweets(twittlerHandler){
+            // $("#tweet_table").remove();
+            var userTweets = $("a:contains("+twittlerHandler+")");
+            var userTweetsCount = userTweets.length- 1;//account for array 0.
+            $("#tweet_table").empty();
+            console.log(userTweetsCount);
             
-            var $tweet = $('<div class="tweet"></div>');
-            for(var i = 0; i < arr_obj.length; i++){
-              if(arr_obj[i][0] == twittlerHandler){
-                //console.log("true");
-                $tweet.append(arr_obj[i][1]+ "<br />");
-              }//if
-              //alert(i[0], i[1]);
+            var userArray = streams.users[twittlerHandler];
+            console.log(userArray);
+            for(var i = userTweetsCount; i >= 0; i--){
+              var tweet = userArray[i];
+              var uName = '<span class="user">'+tweet.user+'</span>';
+              var $userName = '<a href="#">'+'@'+ uName +'</a>';
+              var $date = '<span class="date">'+ tweet.created_at +'</span>';
+              var message = '<div class="mes">'+ tweet.message + '</div>';
+
+              var tr='<tr><td>' + $userName +'</td><td>' + message +'</td><td>' + $date +'</td></tr>';
+              $("#tweet_table").append(tr);
             }//for
 
-
-            // for(var same_users in arr_obj){
-              
-            //   //var $userName = $('<a href="#" class="user"></a>').text('@' + tweet.user);
-            //   //var $date = $('<span class="date"></span>').text(tweet.created_at);
-
-            //   if('@'+ same_users == twittlerHandler){
-            //     $tweet.append(arr_obj[same_users]);
-            //     alert('@'+same_users);
-            //    // $tweet.appendTo($body);
-            //   }
-            //  break;
-            // }//for
-
-            //alert($(".tweet").find("a"));            
-            // if ($(".tweet").find("a") == twittlerHandler){
-            //   console.log();
-            // }
-
-            $tweet.appendTo($body);
-
-          });
-         }
+              //TWO-DIMENSIONAL ARRAY SOLUTION******************
+              // var $tweet = $('<div class="tweet"></div>');
+              // for(var i = 0; i < arr_obj.length; i++){
+              //   if(arr_obj[i][0] == twittlerHandler){
+              //     $tweet.prepend(arr_obj[i][1]+ "<br />");
+              //   }//if
+              // }//for
+              // $tweet.appendTo($body);
+          }//showUserTweets()
 
 
           function init_tweet(){
-            // $body.empty("tweet");
-
-            $(".tweet").remove();//delete child element and itself
-
-            //console.log($body.html());
-            //var present = new Date();
             index = streams.home.length - 1;
-            //alert(index);
-            //alert(index);
+            $("#tweet_table").empty()
+            
             while(index >= 0){
               var tweet = streams.home[index];
-              //var present = tweet.created_at; //put into moment()
-              var $tweet = $('<div class="tweet"></div>');
+              var uName = '<span class="user">'+tweet.user+'</span>';
+              var $userName = '<a href="#">'+'@'+ uName +'</a>';
+              var $date = '<span class="date">'+ tweet.created_at +'</span>';
+              var message = '<div class="mes">'+ tweet.message + '</div>';
 
-
-              // $tweet.text('@' + tweet.user + ': ' + tweet.message + tweet.created_at);
-              // var $username = $('<a href="@ + tweet.user"></a>').text('@'+ tweet)
-              // //tweet is a text, need regex to grab tweet.user?
-              // $tweet.appendTo($body); //prependTo
-
-          // makes twitter handle clickable by adding <a href></a>
-              var $userName = $('<a href="#" class="user"></a>').text('@' + tweet.user);
-              var $date = $('<span class="date"></span>').text(tweet.created_at);
-              
-
-              $tweet.append($userName).append(": " + tweet.message + " ").append($date);
-              $tweet.appendTo($body);
-
-
-              //alert('@' + tweet.user + ': ' + tweet.message + tweet.created_at);
-              //push into array_object so we can fetch all tweets
-                var username = tweet.user;
-                // alert(typeof asdf);
-
-
-                 // var new_obj = {username : '@' + tweet.user + ': ' + tweet.message + tweet.created_at};
-                 // arr_obj.push(new_obj);
-                 
-                 //ONE OBJECT
-                 //arr_obj[username] = '@' + tweet.user + ': ' + tweet.message + tweet.created_at;
-                 //arr_obj[username] = '@' + tweet.user + ': ' + tweet.message + tweet.created_at;
-                 //NEXTED OBJECT
-                 //arr_obj[count] = { key: username:  ": " + tweet.message + tweet.created_at};
-                 arr_obj.push(['@'+username, '@' + tweet.user + ': ' + tweet.message + tweet.created_at]);
-                 //TEST
-                 //alert(username);
-                 //alert( arr_obj);
-              
+              var tr='<tr><td>' + $userName +'</td><td>' + message +'</td><td>' + $date +'</td></tr>';
+              $("#tweet_table").append(tr);
               index -= 1;
             }//while
-
-
-            //TEST
-            console.log(arr_obj);
-
-            streams.home = [];//clears streams.home array
-            run_loop();//load up random tweets
-            showUserTweets();
-          }
-
-
-
-          //body of tweets
-          // while(index >= 0){
-          //   var tweet = streams.home[index];
-          //   var $tweet = $('<div></div>');
-          //   $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          //   $tweet.appendTo($body);
-          //   index -= 1;
-          // }
-        });
+          }//init_tweet();
+        });//document.ready
       
     </script>
-
-    <script>
-        // $(document).ready(function(){
-        //   $("button").click(function(){
-        //     $("<span>Hello World!</span>").appendTo("p");
-        //   });
-        // });
-    </script>
-
-
   </head>
+  
   <body>
-    
     <button id="but1">Display New Tweets!</button>
     <hr />
-    <!-- <p>starting</p> -->
-
+    <table id="tweet_table"></table>
   </body>
 </html>
